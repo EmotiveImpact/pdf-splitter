@@ -235,7 +235,7 @@ const PDFSplitter = () => {
               placeholder="May 2025"
             />
             <p className="text-xs text-muted-foreground">
-              Will be included in filename: CustomerName_AccountNumber_MonthYear.pdf
+              Will be included in filename: AccountNumber_CustomerName_MonthYear.pdf
             </p>
           </div>
         </CardContent>

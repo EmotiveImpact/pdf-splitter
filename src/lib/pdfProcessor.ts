@@ -196,10 +196,10 @@ export async function processPDF(
         formattedName = customerName.replace(/\s+/g, '_');
       }
 
-      // Generate filename
+      // Generate filename - Account number first, then customer name
       const fileName = monthYear
-        ? `${formattedName}_${accountNumber}_${monthYear.replace(/\s+/g, '_')}.pdf`
-        : `${formattedName}_${accountNumber}.pdf`;
+        ? `${accountNumber}_${formattedName}_${monthYear.replace(/\s+/g, '_')}.pdf`
+        : `${accountNumber}_${formattedName}.pdf`;
 
       // Create new PDF with single page
       const newPdfDoc = await PDFDocument.create();
