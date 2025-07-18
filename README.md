@@ -78,9 +78,19 @@ Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-trick
 
 This project uses PDF.js for PDF processing. The PDF.js worker is automatically copied to the public directory during the build process to ensure proper functionality.
 
-## New Water Systems Integration
+## New Water Systems Business Tools Platform
 
-This application is professionally branded for New Water Systems with personalized features for Lisa including browser-optimized downloads and comprehensive PDF processing capabilities.
+This application is a comprehensive business tools platform for New Water Systems with personalized features for Lisa including:
+
+### Available Tools:
+- **PDF Splitter**: Split multi-page PDF bill statements by customer account
+- **Email Distribution**: Send personalized emails with PDF attachments (Coming Soon)
+
+### Platform Features:
+- Multi-tool navigation and dashboard
+- Integrated workflow between tools
+- Browser-optimized downloads
+- Comprehensive PDF processing capabilities
 
 ### Troubleshooting PDF.js Issues
 
