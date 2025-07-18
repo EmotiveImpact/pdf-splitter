@@ -27,8 +27,7 @@ const PlatformLayout: React.FC<PlatformLayoutProps> = ({ children }) => {
       path: '/tools/email-distribution',
       label: 'Email Distribution',
       icon: Mail,
-      description: 'Send personalized emails with attachments',
-      comingSoon: true
+      description: 'Send personalized emails with attachments'
     }
   ];
 

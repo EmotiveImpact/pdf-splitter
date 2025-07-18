@@ -29,14 +29,15 @@ const Dashboard = () => {
       description: 'Send personalized emails with PDF attachments to customers',
       icon: Mail,
       path: '/tools/email-distribution',
-      status: 'coming-soon',
+      status: 'active',
       features: [
         'Bulk email sending',
         'Custom email templates',
         'Account matching',
         'Delivery tracking'
       ],
-      estimatedRelease: 'Next week'
+      lastUsed: 'Never',
+      totalProcessed: '0 emails sent'
     }
   ];
 
@@ -216,14 +217,14 @@ const Dashboard = () => {
                 </div>
               </Link>
             </Button>
-            <Button disabled variant="outline" className="h-auto p-4 opacity-50">
-              <div className="flex flex-col items-center gap-2">
+            <Button asChild variant="outline" className="h-auto p-4">
+              <Link to="/tools/email-distribution" className="flex flex-col items-center gap-2">
                 <Mail className="h-6 w-6" />
                 <div className="text-center">
                   <div className="font-medium">Send Customer Emails</div>
-                  <div className="text-xs text-muted-foreground">Coming soon</div>
+                  <div className="text-xs text-muted-foreground">Email with attachments</div>
                 </div>
-              </div>
+              </Link>
             </Button>
           </div>
         </CardContent>

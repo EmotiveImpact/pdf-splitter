@@ -1,74 +1,76 @@
-import React from 'react';
-import { Mail, ArrowLeft, Clock, CheckCircle, Upload, FileText, Send } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, ArrowLeft, Upload, FileText, Users, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import ZipUploadComponent from '@/components/email/ZipUploadComponent';
+import CsvUploadComponent from '@/components/email/CsvUploadComponent';
+import AccountMatchingComponent from '@/components/email/AccountMatchingComponent';
+import EmailTemplateComponent from '@/components/email/EmailTemplateComponent';
+import EmailSendingComponent from '@/components/email/EmailSendingComponent';
+
+interface PDFFile {
+  name: string;
+  accountNumber: string;
+  customerName: string;
+  blob: Blob;
+}
+
+interface CustomerData {
+  accountNumber: string;
+  email: string;
+  customerName: string;
+}
+
+interface MatchedData {
+  pdf: PDFFile;
+  customer: CustomerData;
+  matched: boolean;
+}
+
+type WorkflowStep = 'upload-zip' | 'upload-csv' | 'match-data' | 'email-template' | 'send-emails';
 
 const EmailDistributionTool = () => {
-  const plannedFeatures = [
-    {
-      title: 'ZIP File Upload',
-      description: 'Upload ZIP files containing split PDF statements',
-      icon: Upload,
-      status: 'planned'
-    },
-    {
-      title: 'CSV Customer Data',
-      description: 'Import customer emails and account numbers via CSV',
-      icon: FileText,
-      status: 'planned'
-    },
-    {
-      title: 'Smart Matching',
-      description: 'Automatically match PDFs to customer emails by account number',
-      icon: CheckCircle,
-      status: 'planned'
-    },
-    {
-      title: 'Email Templates',
-      description: 'Create and customize email templates with variables',
-      icon: Mail,
-      status: 'planned'
-    },
-    {
-      title: 'Bulk Email Sending',
-      description: 'Send personalized emails with PDF attachments via Mailgun',
-      icon: Send,
-      status: 'planned'
-    }
+  const [currentStep, setCurrentStep] = useState<WorkflowStep>('upload-zip');
+  const [pdfFiles, setPdfFiles] = useState<PDFFile[]>([]);
+  const [customerData, setCustomerData] = useState<CustomerData[]>([]);
+  const [matchedData, setMatchedData] = useState<MatchedData[]>([]);
+  const [emailTemplate, setEmailTemplate] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  const steps = [
+    { id: 'upload-zip', title: 'Upload ZIP Files', icon: Upload, description: 'Upload ZIP files containing PDF statements' },
+    { id: 'upload-csv', title: 'Import Customer Data', icon: FileText, description: 'Upload CSV with customer emails and account numbers' },
+    { id: 'match-data', title: 'Match & Verify', icon: Users, description: 'Match PDFs to customers by account number' },
+    { id: 'email-template', title: 'Email Template', icon: Mail, description: 'Create personalized email template' },
+    { id: 'send-emails', title: 'Send Emails', icon: Send, description: 'Send emails with PDF attachments' }
   ];
 
-  const workflow = [
-    {
-      step: 1,
-      title: 'Upload ZIP Files',
-      description: 'Upload ZIP files containing your split PDF statements from the PDF Splitter tool'
-    },
-    {
-      step: 2,
-      title: 'Import Customer Data',
-      description: 'Upload a CSV file with customer emails and account numbers'
-    },
-    {
-      step: 3,
-      title: 'Match & Verify',
-      description: 'System automatically matches PDFs to customers by account number'
-    },
-    {
-      step: 4,
-      title: 'Customize Email',
-      description: 'Create or select an email template with personalized variables'
-    },
-    {
-      step: 5,
-      title: 'Send Emails',
-      description: 'Bulk send personalized emails with correct PDF attachments'
+  const getCurrentStepIndex = () => steps.findIndex(step => step.id === currentStep);
+  const getStepStatus = (stepId: string) => {
+    const stepIndex = steps.findIndex(step => step.id === stepId);
+    const currentIndex = getCurrentStepIndex();
+
+    if (stepIndex < currentIndex) return 'completed';
+    if (stepIndex === currentIndex) return 'current';
+    return 'upcoming';
+  };
+
+  const canProceedToStep = (stepId: WorkflowStep): boolean => {
+    switch (stepId) {
+      case 'upload-csv': return pdfFiles.length > 0;
+      case 'match-data': return pdfFiles.length > 0 && customerData.length > 0;
+      case 'email-template': return matchedData.length > 0;
+      case 'send-emails': return matchedData.length > 0 && emailTemplate.trim() !== '';
+      default: return true;
     }
-  ];
+  };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
+    <div className="max-w-6xl mx-auto p-6 space-y-6">
       {/* Back Navigation */}
       <div className="flex items-center gap-4">
         <Button asChild variant="ghost" size="sm">
@@ -91,121 +93,185 @@ const EmailDistributionTool = () => {
           <p className="text-lg text-muted-foreground">
             Send personalized emails with PDF attachments to your customers automatically.
           </p>
-          <div className="flex items-center justify-center gap-2">
-            <Clock className="h-4 w-4 text-yellow-600" />
-            <Badge className="bg-yellow-100 text-yellow-700">Coming Soon</Badge>
-          </div>
+          <Badge className="bg-green-100 text-green-700">Now Available</Badge>
         </div>
       </div>
 
-      {/* Coming Soon Notice */}
-      <Card className="border-yellow-200 bg-yellow-50">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-yellow-800">
-            <Clock className="h-5 w-5" />
-            Development in Progress
-          </CardTitle>
-          <CardDescription className="text-yellow-700">
-            This tool is currently being developed and will be available soon. It will integrate seamlessly with the PDF Splitter tool to create a complete workflow.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="text-sm text-yellow-700">
-            <p><strong>Estimated Release:</strong> Next week</p>
-            <p><strong>Integration:</strong> Mailgun API for reliable email delivery</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Planned Features */}
+      {/* Progress Steps */}
       <Card>
         <CardHeader>
-          <CardTitle>Planned Features</CardTitle>
+          <CardTitle>Workflow Progress</CardTitle>
           <CardDescription>
-            Here's what this tool will be able to do when it's ready
+            Follow these steps to send personalized emails to your customers
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4">
-            {plannedFeatures.map((feature, index) => {
-              const Icon = feature.icon;
+          <div className="flex items-center justify-between mb-6">
+            {steps.map((step, index) => {
+              const Icon = step.icon;
+              const status = getStepStatus(step.id as WorkflowStep);
+
               return (
-                <div key={index} className="flex items-start gap-3 p-3 border rounded-lg">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <Icon className="h-4 w-4 text-blue-600" />
+                <div key={step.id} className="flex flex-col items-center space-y-2">
+                  <div className={`
+                    w-10 h-10 rounded-full flex items-center justify-center border-2 transition-colors
+                    ${status === 'completed' ? 'bg-green-100 border-green-500 text-green-700' :
+                      status === 'current' ? 'bg-blue-100 border-blue-500 text-blue-700' :
+                      'bg-gray-100 border-gray-300 text-gray-500'}
+                  `}>
+                    {status === 'completed' ? (
+                      <CheckCircle className="h-5 w-5" />
+                    ) : (
+                      <Icon className="h-5 w-5" />
+                    )}
                   </div>
-                  <div className="flex-1">
-                    <h4 className="font-medium">{feature.title}</h4>
-                    <p className="text-sm text-muted-foreground">{feature.description}</p>
+                  <div className="text-center">
+                    <p className={`text-xs font-medium ${
+                      status === 'current' ? 'text-blue-700' :
+                      status === 'completed' ? 'text-green-700' : 'text-gray-500'
+                    }`}>
+                      {step.title}
+                    </p>
                   </div>
-                  <Badge variant="outline" className="text-xs">
-                    Planned
-                  </Badge>
+                  {index < steps.length - 1 && (
+                    <div className={`absolute w-16 h-0.5 mt-5 ml-10 ${
+                      status === 'completed' ? 'bg-green-300' : 'bg-gray-300'
+                    }`} style={{ transform: 'translateX(20px)' }} />
+                  )}
                 </div>
               );
             })}
           </div>
-        </CardContent>
-      </Card>
 
-      {/* Workflow Preview */}
-      <Card>
-        <CardHeader>
-          <CardTitle>How It Will Work</CardTitle>
-          <CardDescription>
-            The complete workflow from PDF splitting to email delivery
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {workflow.map((item, index) => (
-              <div key={index} className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-medium">
-                  {item.step}
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-medium">{item.title}</h4>
-                  <p className="text-sm text-muted-foreground">{item.description}</p>
-                </div>
-              </div>
-            ))}
+          {/* Progress Bar */}
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span>Overall Progress</span>
+              <span>{Math.round((getCurrentStepIndex() / (steps.length - 1)) * 100)}%</span>
+            </div>
+            <Progress value={(getCurrentStepIndex() / (steps.length - 1)) * 100} />
           </div>
         </CardContent>
       </Card>
 
-      {/* Integration Notice */}
-      <Card className="border-blue-200 bg-blue-50">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-blue-800">
-            <CheckCircle className="h-5 w-5" />
-            Seamless Integration
-          </CardTitle>
-          <CardDescription className="text-blue-700">
-            This tool will work perfectly with the PDF Splitter tool you're already using.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="text-sm text-blue-700 space-y-2">
-            <p>• Use ZIP files directly from the PDF Splitter</p>
-            <p>• Account numbers will automatically match between tools</p>
-            <p>• Consistent file naming ensures perfect compatibility</p>
-            <p>• Complete workflow: Split PDFs → Email Customers</p>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Step Content */}
+      <div className="space-y-6">
+        {currentStep === 'upload-zip' && (
+          <ZipUploadComponent
+            onFilesExtracted={(files) => {
+              setPdfFiles(files);
+              if (files.length > 0) {
+                setCurrentStep('upload-csv');
+              }
+            }}
+            isProcessing={isProcessing}
+          />
+        )}
 
-      {/* Call to Action */}
-      <div className="text-center space-y-4">
-        <p className="text-muted-foreground">
-          In the meantime, continue using the PDF Splitter tool to prepare your files.
-        </p>
-        <Button asChild>
-          <Link to="/tools/pdf-splitter">
-            <FileText className="h-4 w-4 mr-2" />
-            Go to PDF Splitter
-          </Link>
-        </Button>
+        {currentStep === 'upload-csv' && (
+          <CsvUploadComponent
+            onDataParsed={(data) => {
+              setCustomerData(data);
+              if (data.length > 0) {
+                setCurrentStep('match-data');
+              }
+            }}
+            isProcessing={isProcessing}
+          />
+        )}
+
+        {currentStep === 'match-data' && (
+          <AccountMatchingComponent
+            pdfFiles={pdfFiles}
+            customerData={customerData}
+            onMatchingComplete={(matches) => {
+              setMatchedData(matches);
+              if (matches.length > 0) {
+                setCurrentStep('email-template');
+              }
+            }}
+            isProcessing={isProcessing}
+          />
+        )}
+
+        {currentStep === 'email-template' && (
+          <EmailTemplateComponent
+            matchedData={matchedData}
+            onTemplateReady={(template) => {
+              setEmailTemplate(template);
+              if (template.trim() !== '') {
+                setCurrentStep('send-emails');
+              }
+            }}
+            isProcessing={isProcessing}
+          />
+        )}
+
+        {currentStep === 'send-emails' && (
+          <EmailSendingComponent
+            matchedData={matchedData}
+            emailTemplate={emailTemplate}
+            onSendingComplete={() => {
+              // Reset or show completion
+              setProgress(100);
+            }}
+            isProcessing={isProcessing}
+            onProgressUpdate={setProgress}
+          />
+        )}
       </div>
+
+      {/* Navigation Controls */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex justify-between">
+            <Button
+              variant="outline"
+              onClick={() => {
+                const currentIndex = getCurrentStepIndex();
+                if (currentIndex > 0) {
+                  setCurrentStep(steps[currentIndex - 1].id as WorkflowStep);
+                }
+              }}
+              disabled={getCurrentStepIndex() === 0}
+            >
+              Previous Step
+            </Button>
+
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  // Reset workflow
+                  setCurrentStep('upload-zip');
+                  setPdfFiles([]);
+                  setCustomerData([]);
+                  setMatchedData([]);
+                  setEmailTemplate('');
+                  setProgress(0);
+                }}
+              >
+                Reset Workflow
+              </Button>
+
+              <Button
+                onClick={() => {
+                  const currentIndex = getCurrentStepIndex();
+                  if (currentIndex < steps.length - 1) {
+                    const nextStep = steps[currentIndex + 1].id as WorkflowStep;
+                    if (canProceedToStep(nextStep)) {
+                      setCurrentStep(nextStep);
+                    }
+                  }
+                }}
+                disabled={getCurrentStepIndex() === steps.length - 1 || !canProceedToStep(steps[getCurrentStepIndex() + 1]?.id as WorkflowStep)}
+              >
+                Next Step
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
