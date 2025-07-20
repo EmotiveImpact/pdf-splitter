@@ -91,20 +91,29 @@ export function usePatterns() {
   const [patterns, setPatterns] = useState<PatternSet>(DEFAULT_PATTERNS);
 
   useEffect(() => {
-    const stored = localStorage.getItem('pdf-splitter-patterns');
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        setPatterns(parsed);
-      } catch (error) {
-        console.error('Failed to parse stored patterns:', error);
+    // Only access localStorage on client side
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('pdf-splitter-patterns');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          setPatterns(parsed);
+        } catch (error) {
+          console.error('Failed to parse stored patterns:', error);
+        }
       }
     }
   }, []);
 
   const savePatterns = (newPatterns: PatternSet) => {
     setPatterns(newPatterns);
-    localStorage.setItem('pdf-splitter-patterns', JSON.stringify(newPatterns));
+    // Only access localStorage on client side
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(
+        'pdf-splitter-patterns',
+        JSON.stringify(newPatterns)
+      );
+    }
   };
 
   const addAccountPattern = (pattern: string) => {

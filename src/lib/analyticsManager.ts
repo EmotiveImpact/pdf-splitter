@@ -93,6 +93,14 @@ class AnalyticsManager {
     };
 
     try {
+      // Only access localStorage on client side
+      if (typeof window === 'undefined') {
+        console.log(
+          'Failed to load analytics data: localStorage is not defined'
+        );
+        return defaultData;
+      }
+
       const saved = localStorage.getItem(this.STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
@@ -142,6 +150,11 @@ class AnalyticsManager {
 
   private saveData(): void {
     try {
+      // Only save to localStorage on client side
+      if (typeof window === 'undefined') {
+        return;
+      }
+
       const dataToSave = {
         ...this.data,
         customers: Array.from(this.data.customers.entries())
