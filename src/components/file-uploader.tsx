@@ -119,7 +119,7 @@ export function FileUploader(props: FileUploaderProps) {
         return;
       }
 
-      if ((files?.length ?? 0) + acceptedFiles.length > maxFiles) {
+      if (((files as File[])?.length ?? 0) + acceptedFiles.length > maxFiles) {
         toast.error(`Cannot upload more than ${maxFiles} files`);
         return;
       }
@@ -130,7 +130,9 @@ export function FileUploader(props: FileUploaderProps) {
         })
       );
 
-      const updatedFiles = files ? [...files, ...newFiles] : newFiles;
+      const updatedFiles = (files as File[])
+        ? [...(files as File[]), ...newFiles]
+        : newFiles;
 
       setFiles(updatedFiles);
 
@@ -164,7 +166,7 @@ export function FileUploader(props: FileUploaderProps) {
 
   function onRemove(index: number) {
     if (!files) return;
-    const newFiles = files.filter((_, i) => i !== index);
+    const newFiles = (files as File[]).filter((_, i) => i !== index);
     setFiles(newFiles);
     onValueChange?.(newFiles);
   }
@@ -173,7 +175,7 @@ export function FileUploader(props: FileUploaderProps) {
   React.useEffect(() => {
     return () => {
       if (!files) return;
-      files.forEach((file) => {
+      (files as File[]).forEach((file) => {
         if (isFileWithPreview(file)) {
           URL.revokeObjectURL(file.preview);
         }
@@ -182,7 +184,7 @@ export function FileUploader(props: FileUploaderProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const isDisabled = disabled || (files?.length ?? 0) >= maxFiles;
+  const isDisabled = disabled || ((files as File[])?.length ?? 0) >= maxFiles;
 
   return (
     <div className='relative flex flex-col gap-6 overflow-hidden'>
@@ -244,10 +246,10 @@ export function FileUploader(props: FileUploaderProps) {
           </div>
         )}
       </Dropzone>
-      {files?.length ? (
+      {(files as File[])?.length ? (
         <ScrollArea className='h-fit w-full px-3'>
           <div className='max-h-48 space-y-4'>
-            {files?.map((file, index) => (
+            {(files as File[])?.map((file, index) => (
               <FileCard
                 key={index}
                 file={file}

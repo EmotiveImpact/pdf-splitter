@@ -1,6 +1,7 @@
 import {
   AlertTriangle,
   ArrowRight,
+  BarChart3,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -8,8 +9,10 @@ import {
   Command,
   CreditCard,
   File,
+  FileEdit,
   FileText,
   HelpCircle,
+  History,
   Image,
   Laptop,
   LayoutDashboardIcon,
@@ -18,6 +21,7 @@ import {
   LucideIcon,
   LucideProps,
   LucideShoppingBag,
+  Mail,
   Moon,
   MoreVertical,
   Pizza,
@@ -26,9 +30,11 @@ import {
   SunMedium,
   Trash,
   Twitter,
+  Upload,
   User,
   UserCircle2Icon,
   UserPen,
+  Users,
   UserX2Icon,
   X
 } from 'lucide-react';
@@ -64,6 +70,14 @@ export const Icons = {
   sun: SunMedium,
   moon: Moon,
   laptop: Laptop,
+  // ClientCore specific icons
+  fileText: FileText,
+  fileEdit: FileEdit,
+  mail: Mail,
+  users: Users,
+  barChart3: BarChart3,
+  history: History,
+  upload: Upload,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden='true'

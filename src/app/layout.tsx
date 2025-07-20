@@ -8,8 +8,9 @@ import NextTopLoader from 'nextjs-toploader';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Next Shadcn',
-  description: 'Basic dashboard with Next.js and Shadcn'
+  title: 'ClientCore - Professional Client Management Platform',
+  description:
+    'Complete SaaS solution for PDF processing, email distribution, and client management'
 };
 
 const lato = Lato({

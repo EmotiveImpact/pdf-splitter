@@ -22,19 +22,93 @@ export const navItems: NavItem[] = [
     items: [] // Empty array as there are no child items for Dashboard
   },
   {
-    title: 'Product',
-    url: '/dashboard/product',
-    icon: 'product',
+    title: 'PDF Tools',
+    url: '#',
+    icon: 'fileText',
     shortcut: ['p', 'p'],
     isActive: false,
-    items: [] // No child items
+    items: [
+      {
+        title: 'PDF Splitter',
+        url: '/dashboard/pdf-splitter',
+        icon: 'fileText',
+        shortcut: ['p', 's']
+      },
+      {
+        title: 'Processing History',
+        url: '/dashboard/processing-history',
+        icon: 'history',
+        shortcut: ['p', 'h']
+      }
+    ]
+  },
+  {
+    title: 'Email Tools',
+    url: '#',
+    icon: 'mail',
+    shortcut: ['e', 'e'],
+    isActive: false,
+    items: [
+      {
+        title: 'Email Distribution',
+        url: '/dashboard/email-distribution',
+        icon: 'mail',
+        shortcut: ['e', 'd']
+      },
+      {
+        title: 'Email Templates',
+        url: '/dashboard/email-templates',
+        icon: 'fileEdit',
+        shortcut: ['e', 't']
+      },
+      {
+        title: 'Campaign History',
+        url: '/dashboard/campaigns',
+        icon: 'history',
+        shortcut: ['e', 'h']
+      }
+    ]
+  },
+  {
+    title: 'Clients',
+    url: '#',
+    icon: 'users',
+    shortcut: ['c', 'c'],
+    isActive: false,
+    items: [
+      {
+        title: 'Client Database',
+        url: '/dashboard/clients',
+        icon: 'users',
+        shortcut: ['c', 'd']
+      },
+      {
+        title: 'Import/Export',
+        url: '/dashboard/clients/import',
+        icon: 'upload',
+        shortcut: ['c', 'i']
+      },
+      {
+        title: 'Client Analytics',
+        url: '/dashboard/clients/analytics',
+        icon: 'barChart3',
+        shortcut: ['c', 'a']
+      }
+    ]
+  },
+  {
+    title: 'Analytics',
+    url: '/dashboard/analytics',
+    icon: 'barChart3',
+    shortcut: ['a', 'a'],
+    isActive: false,
+    items: []
   },
   {
     title: 'Account',
-    url: '#', // Placeholder as there is no direct link for the parent
+    url: '#',
     icon: 'billing',
-    isActive: true,
-
+    isActive: false,
     items: [
       {
         title: 'Profile',
@@ -43,20 +117,18 @@ export const navItems: NavItem[] = [
         shortcut: ['m', 'm']
       },
       {
-        title: 'Login',
-        shortcut: ['l', 'l'],
-        url: '/',
-        icon: 'login'
+        title: 'Billing',
+        url: '/dashboard/billing',
+        icon: 'billing',
+        shortcut: ['b', 'b']
+      },
+      {
+        title: 'Team',
+        url: '/dashboard/team',
+        icon: 'users',
+        shortcut: ['t', 't']
       }
     ]
-  },
-  {
-    title: 'Kanban',
-    url: '/dashboard/kanban',
-    icon: 'kanban',
-    shortcut: ['k', 'k'],
-    isActive: false,
-    items: [] // No child items
   }
 ];
 
