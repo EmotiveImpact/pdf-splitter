@@ -6,7 +6,7 @@ function configureWorker() {
   console.log('Configuring PDF.js worker...');
 
   try {
-    // Use the worker file we have in public directory
+    // Try local worker first, then CDN fallback
     pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
     console.log('✅ PDF.js worker configured with local worker file');
     return true;
@@ -14,9 +14,9 @@ function configureWorker() {
     console.warn('Local worker failed, trying CDN fallback:', error);
 
     try {
-      // Fallback to CDN worker
-      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
-      console.log('✅ PDF.js worker configured with CDN fallback');
+      // Fallback to alternative CDN worker
+      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.js`;
+      console.log('✅ PDF.js worker configured with alternative CDN');
       return true;
     } catch (cdnError) {
       console.error('CDN worker also failed:', cdnError);
