@@ -22,12 +22,13 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { processPDF } from '@/lib/pdfProcessor';
-import PatternManager from '@/components/PatternManager';
-import ProcessingStatusBar from '@/components/ProcessingStatusBar';
-import DownloadManager from '@/components/DownloadManager';
+// Temporarily comment out complex components to isolate the issue
+// import PatternManager from '@/components/PatternManager';
+// import ProcessingStatusBar from '@/components/ProcessingStatusBar';
+// import DownloadManager from '@/components/DownloadManager';
 import { usePatterns } from '@/hooks/usePatterns';
-import CleanupSettingsComponent from '@/components/settings/CleanupSettings';
-import FileCleanupManager from '@/components/cleanup/FileCleanupManager';
+// import CleanupSettingsComponent from '@/components/settings/CleanupSettings';
+// import FileCleanupManager from '@/components/cleanup/FileCleanupManager';
 import {
   memoryManager,
   MemoryManager,
@@ -249,39 +250,17 @@ const PDFSplitterPage = () => {
 
         {/* Processing Status */}
         {isProcessing && (
-          <ProcessingStatusBar
-            file={file}
-            isProcessing={isProcessing}
-            progress={progress}
-            processedFiles={processedFiles}
-            errors={errors}
-            onProcess={processFile}
-            onDownloadAll={() => {}}
-          />
+          <div>Processing Status Bar (temporarily disabled)</div>
         )}
 
         {/* Pattern Manager */}
-        <PatternManager />
+        <div>Pattern Manager (temporarily disabled)</div>
 
         {/* Cleanup Settings */}
-        <CleanupSettingsComponent
-          onSettingsChange={(settings) =>
-            memoryManager.updateSettings(settings)
-          }
-          memoryUsage={memoryUsage}
-        />
+        <div>Cleanup Settings (temporarily disabled)</div>
 
         {/* File Cleanup Manager */}
-        <FileCleanupManager
-          currentBatchId={currentBatchId || undefined}
-          onFilesCleared={(batchId) => {
-            if (batchId === currentBatchId) {
-              setProcessedFiles([]);
-              setCurrentBatchId(null);
-            }
-            updateMemoryUsage();
-          }}
-        />
+        <div>File Cleanup Manager (temporarily disabled)</div>
 
         {/* Results */}
         {(processedFiles.length > 0 || errors.length > 0) && (
@@ -296,17 +275,7 @@ const PDFSplitterPage = () => {
               {/* Enhanced Download Manager */}
               {processedFiles.length > 0 && (
                 <div className='space-y-4'>
-                  <DownloadManager
-                    files={processedFiles}
-                    disabled={isProcessing}
-                    monthYear={monthYear}
-                    onDownloadComplete={() => {
-                      if (currentBatchId) {
-                        memoryManager.onDownloadComplete(currentBatchId);
-                        updateMemoryUsage();
-                      }
-                    }}
-                  />
+                  <div>Download Manager (temporarily disabled)</div>
 
                   <div className='space-y-2'>
                     <h4 className='text-success font-medium'>
