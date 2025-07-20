@@ -7,16 +7,36 @@ interface PatternSet {
 
 const DEFAULT_PATTERNS: PatternSet = {
   accountPatterns: [
-    'account\\s*nbr[:\\s]+(FBNWSTX\\d+)',
-    'account\\s*nbr[:\\s]+(DNWSTX\\d+)',
-    'account\\s*nbr[:\\s]+(WNWSTX\\d+)',
-    'account\\s*nbr[:\\s]+(SMNWSTX\\d+)',
-    'account\\s*nbr[:\\s]+(SENWSTX\\d+)',
-    'account\\s*nbr[:\\s]+(SVNWSTX\\d+)',
-    'account\\s*nbr[:\\s]+(PPNWSTX\\d+)',
-    'account\\s*nbr[:\\s]+(OHNWSTX\\d+)',
-    'account\\s*nbr[:\\s]+(SUNWSTX\\d+)',
-    'account\\s*nbr[:\\s]+([A-Z]{2,}\\d+)'
+    // Specific patterns for known formats
+    'account\\s*(?:nbr|number|no)[:\\s]+(FBNWSTX\\d+)',
+    'account\\s*(?:nbr|number|no)[:\\s]+(DNWSTX\\d+)',
+    'account\\s*(?:nbr|number|no)[:\\s]+(WNWSTX\\d+)',
+    'account\\s*(?:nbr|number|no)[:\\s]+(SMNWSTX\\d+)',
+    'account\\s*(?:nbr|number|no)[:\\s]+(SENWSTX\\d+)',
+    'account\\s*(?:nbr|number|no)[:\\s]+(SVNWSTX\\d+)',
+    'account\\s*(?:nbr|number|no)[:\\s]+(PPNWSTX\\d+)',
+    'account\\s*(?:nbr|number|no)[:\\s]+(OHNWSTX\\d+)',
+    'account\\s*(?:nbr|number|no)[:\\s]+(SUNWSTX\\d+)',
+
+    // Generic patterns for various account formats
+    'account\\s*(?:nbr|number|no)[:\\s]+([A-Z]{2,}\\d+)',
+    'account\\s*(?:nbr|number|no)[:\\s]+(\\d{6,})',
+    'account\\s*(?:nbr|number|no)[:\\s]+([A-Z0-9]{6,})',
+
+    // Alternative labels
+    'acct\\s*(?:nbr|number|no)[:\\s]+([A-Z0-9]{6,})',
+    'account[:\\s]+([A-Z0-9]{6,})',
+    'acct[:\\s]+([A-Z0-9]{6,})',
+
+    // More flexible patterns
+    '(?:account|acct)\\s*#[:\\s]*([A-Z0-9]{6,})',
+    'account\\s*id[:\\s]+([A-Z0-9]{6,})',
+    'customer\\s*(?:account|acct)[:\\s]+([A-Z0-9]{6,})',
+
+    // Very generic - any alphanumeric sequence that looks like an account
+    '([A-Z]{2,}\\d{4,})',
+    '(\\d{8,})',
+    '([A-Z0-9]{8,})'
   ],
   namePatterns: [
     // Married couple patterns (priority - check first)
@@ -24,16 +44,19 @@ const DEFAULT_PATTERNS: PatternSet = {
     'customer\\s*name[:\\s]+([A-Za-z]+\\s*&\\s*[A-Za-z]+\\s+[A-Za-z]+)', // John & Mary Smith
     "customer\\s*name[:\\s]+([A-Za-z]+\\s+&\\s+[A-Za-z]+\\s+[A-Za-z]+'?s?)", // Maria & Carlos Rodriguez's
 
-    // Original patterns (clean names without "Account")
+    // Customer name patterns
     'customer\\s*name[:\\s]+([A-Z][a-z]+\\s+[A-Z][a-z]+)\\s*(?:Account)?',
     'customer\\s*name[:\\s]+([A-Z][a-z]+\\s+[A-Z][a-z]+\\s+[A-Z][a-z]+)\\s*(?:Account)?',
-
-    // More flexible patterns for different formats
     'customer\\s*name[:\\s]+([A-Z][A-Z\\s]+)', // ALL CAPS names
     'customer\\s*name[:\\s]+([A-Za-z]+\\s+[A-Za-z]+(?:\\s+[A-Za-z]+)?)', // Mixed case
     "customer\\s*name[:\\s]+([A-Za-z\\s\\.\\-']+)", // Names with dots, hyphens, apostrophes
 
-    // Alternative label patterns
+    // Alternative customer labels
+    'customer[:\\s]+([A-Za-z]+\\s+[A-Za-z]+(?:\\s+[A-Za-z]+)?)',
+    'client\\s*name[:\\s]+([A-Za-z]+\\s+[A-Za-z]+(?:\\s+[A-Za-z]+)?)',
+    'client[:\\s]+([A-Za-z]+\\s+[A-Za-z]+(?:\\s+[A-Za-z]+)?)',
+
+    // Name patterns
     'name[:\\s]+([A-Z][a-z]+\\s+[A-Z][a-z]+(?:\\s+[A-Z][a-z]+)?)',
     'name[:\\s]+([A-Za-z]+\\s+[A-Za-z]+(?:\\s+[A-Za-z]+)?)',
     "name[:\\s]+([A-Za-z\\s\\.\\-']+)",
@@ -48,7 +71,17 @@ const DEFAULT_PATTERNS: PatternSet = {
     'bill\\s*to[:\\s]+([A-Za-z]+\\s+[A-Za-z]+(?:\\s+[A-Za-z]+)?)',
     "bill\\s*to[:\\s]+([A-Za-z\\s\\.\\-']+)",
 
-    // Generic patterns for any name-like text
+    // Service for patterns
+    'service\\s*for[:\\s]+([A-Za-z]+\\s+[A-Za-z]+(?:\\s+[A-Za-z]+)?)',
+    'statement\\s*for[:\\s]+([A-Za-z]+\\s+[A-Za-z]+(?:\\s+[A-Za-z]+)?)',
+
+    // Address patterns (sometimes names appear in address blocks)
+    'dear\\s+([A-Za-z]+\\s+[A-Za-z]+)',
+    'mr\\.?\\s+([A-Za-z]+\\s+[A-Za-z]+)',
+    'mrs\\.?\\s+([A-Za-z]+\\s+[A-Za-z]+)',
+    'ms\\.?\\s+([A-Za-z]+\\s+[A-Za-z]+)',
+
+    // Generic patterns for any name-like text (use with caution)
     '([A-Z][a-z]+\\s+[A-Z][a-z]+)(?=\\s|$)', // Two capitalized words
     '([A-Z][A-Z\\s]+)(?=\\s|$)' // ALL CAPS words
   ]

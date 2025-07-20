@@ -120,8 +120,8 @@ const PDFSplitterPage = () => {
     try {
       const result = await processPDF(
         file,
-        patterns.accountPatterns[0] || '',
-        patterns.namePatterns[0] || '',
+        patterns.accountPatterns,
+        patterns.namePatterns,
         monthYear,
         (progress) => setProgress(progress)
       );

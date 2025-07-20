@@ -66,8 +66,8 @@ interface ProcessResult {
 
 export async function processPDF(
   file: File,
-  accountPattern: string,
-  namePattern: string,
+  accountPatterns: string[],
+  namePatterns: string[],
   monthYear: string,
   onProgress: (progress: number) => void
 ): Promise<ProcessResult> {
@@ -131,12 +131,14 @@ export async function processPDF(
           pageText.substring(0, 500)
         );
 
+        // Also log the full text for debugging (can be removed later)
+        console.log(`Page ${i + 1} FULL TEXT:`, pageText);
+
         // Extract customer name and account number using multiple patterns
         let accountNumber = '';
         let customerName = '';
 
         // Try account patterns
-        const accountPatterns = accountPattern.split('|');
         for (const pattern of accountPatterns) {
           const match = pageText.match(new RegExp(pattern, 'i'));
           if (match && match[1]) {
@@ -149,7 +151,6 @@ export async function processPDF(
         }
 
         // Try name patterns
-        const namePatterns = namePattern.split('|');
         for (const pattern of namePatterns) {
           const match = pageText.match(new RegExp(pattern, 'i'));
           if (match && match[1]) {
