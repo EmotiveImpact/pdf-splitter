@@ -22,8 +22,8 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { processPDF } from '@/lib/pdfProcessor';
-// Temporarily comment out complex components to isolate the issue
-// import PatternManager from '@/components/PatternManager';
+// Re-enabling components one by one
+import PatternManager from '@/components/PatternManager';
 // import ProcessingStatusBar from '@/components/ProcessingStatusBar';
 // import DownloadManager from '@/components/DownloadManager';
 import { usePatterns } from '@/hooks/usePatterns';
@@ -254,7 +254,7 @@ const PDFSplitterPage = () => {
         )}
 
         {/* Pattern Manager */}
-        <div>Pattern Manager (temporarily disabled)</div>
+        <PatternManager />
 
         {/* Cleanup Settings */}
         <div>Cleanup Settings (temporarily disabled)</div>
