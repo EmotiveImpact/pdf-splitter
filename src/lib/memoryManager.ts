@@ -52,6 +52,11 @@ class MemoryManager {
     };
 
     try {
+      // Only access localStorage on client side
+      if (typeof window === 'undefined') {
+        return defaultSettings;
+      }
+
       const saved = localStorage.getItem('pdfCleanupSettings');
       return saved
         ? { ...defaultSettings, ...JSON.parse(saved) }
@@ -63,7 +68,10 @@ class MemoryManager {
 
   public updateSettings(newSettings: CleanupSettings): void {
     this.settings = newSettings;
-    localStorage.setItem('pdfCleanupSettings', JSON.stringify(newSettings));
+    // Only save to localStorage on client side
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('pdfCleanupSettings', JSON.stringify(newSettings));
+    }
   }
 
   public getSettings(): CleanupSettings {

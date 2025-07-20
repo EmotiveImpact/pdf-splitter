@@ -22,13 +22,13 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { processPDF } from '@/lib/pdfProcessor';
-// Re-enabling components one by one
+// Re-enabling ALL components completely
 import PatternManager from '@/components/PatternManager';
-// import ProcessingStatusBar from '@/components/ProcessingStatusBar';
-// import DownloadManager from '@/components/DownloadManager';
+import ProcessingStatusBar from '@/components/ProcessingStatusBar';
+import DownloadManager from '@/components/DownloadManager';
 import { usePatterns } from '@/hooks/usePatterns';
-// import CleanupSettingsComponent from '@/components/settings/CleanupSettings';
-// import FileCleanupManager from '@/components/cleanup/FileCleanupManager';
+import CleanupSettingsComponent from '@/components/settings/CleanupSettings';
+import FileCleanupManager from '@/components/cleanup/FileCleanupManager';
 import {
   memoryManager,
   MemoryManager,
@@ -250,17 +250,39 @@ const PDFSplitterPage = () => {
 
         {/* Processing Status */}
         {isProcessing && (
-          <div>Processing Status Bar (temporarily disabled)</div>
+          <ProcessingStatusBar
+            file={file}
+            isProcessing={isProcessing}
+            progress={progress}
+            processedFiles={processedFiles}
+            errors={errors}
+            onProcess={processFile}
+            onDownloadAll={() => {}}
+          />
         )}
 
         {/* Pattern Manager */}
         <PatternManager />
 
         {/* Cleanup Settings */}
-        <div>Cleanup Settings (temporarily disabled)</div>
+        <CleanupSettingsComponent
+          onSettingsChange={(settings) =>
+            memoryManager.updateSettings(settings)
+          }
+          memoryUsage={memoryUsage}
+        />
 
         {/* File Cleanup Manager */}
-        <div>File Cleanup Manager (temporarily disabled)</div>
+        <FileCleanupManager
+          currentBatchId={currentBatchId || undefined}
+          onFilesCleared={(batchId) => {
+            if (batchId === currentBatchId) {
+              setProcessedFiles([]);
+              setCurrentBatchId(null);
+            }
+            updateMemoryUsage();
+          }}
+        />
 
         {/* Results */}
         {(processedFiles.length > 0 || errors.length > 0) && (
@@ -275,7 +297,17 @@ const PDFSplitterPage = () => {
               {/* Enhanced Download Manager */}
               {processedFiles.length > 0 && (
                 <div className='space-y-4'>
-                  <div>Download Manager (temporarily disabled)</div>
+                  <DownloadManager
+                    files={processedFiles}
+                    disabled={isProcessing}
+                    monthYear={monthYear}
+                    onDownloadComplete={() => {
+                      if (currentBatchId) {
+                        memoryManager.onDownloadComplete(currentBatchId);
+                        updateMemoryUsage();
+                      }
+                    }}
+                  />
 
                   <div className='space-y-2'>
                     <h4 className='text-success font-medium'>
