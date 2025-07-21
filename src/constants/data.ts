@@ -88,28 +88,52 @@ export const navItems: NavItem[] = [
     ]
   },
   {
-    title: 'Customers',
+    title: 'CRM',
     url: '#',
     icon: 'users',
-    shortcut: ['c', 'c'],
+    shortcut: ['c', 'r'],
     isActive: false,
     items: [
+      {
+        title: 'CRM Dashboard',
+        url: '/dashboard/crm',
+        icon: 'barChart3',
+        shortcut: ['c', 'd']
+      },
       {
         title: 'Customer Database',
         url: '/dashboard/clients',
         icon: 'users',
-        shortcut: ['c', 'd']
+        shortcut: ['c', 'u']
       },
       {
-        title: 'Import/Export',
-        url: '/dashboard/clients/import',
-        icon: 'upload',
+        title: 'Communications',
+        url: '/dashboard/communications',
+        icon: 'messageSquare',
+        shortcut: ['c', 'c']
+      },
+      {
+        title: 'Invoices & Billing',
+        url: '/dashboard/invoices',
+        icon: 'fileText',
         shortcut: ['c', 'i']
+      },
+      {
+        title: 'Payments',
+        url: '/dashboard/payments',
+        icon: 'creditCard',
+        shortcut: ['c', 'p']
+      },
+      {
+        title: 'Tasks & Follow-ups',
+        url: '/dashboard/tasks',
+        icon: 'calendar',
+        shortcut: ['c', 't']
       },
       {
         title: 'Customer Analytics',
         url: '/dashboard/clients/analytics',
-        icon: 'barChart3',
+        icon: 'trendingUp',
         shortcut: ['c', 'a']
       }
     ]
