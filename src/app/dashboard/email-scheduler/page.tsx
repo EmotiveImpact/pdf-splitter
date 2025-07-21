@@ -46,12 +46,26 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import PageContainer from '@/components/layout/page-container';
 
+interface CustomerSegment {
+  id: string;
+  name: string;
+  description: string;
+  count: number;
+  criteria: {
+    status?: 'active' | 'inactive' | 'all';
+    emailEnabled?: boolean;
+    location?: string;
+    accountType?: string;
+    lastActivityDays?: number;
+  };
+}
+
 interface ScheduledCampaign {
   id: string;
   name: string;
   subject: string;
   templateName: string;
-  recipientCount: number;
+  recipientSegment: CustomerSegment;
   scheduledDate: Date;
   scheduledTime: string;
   timezone: string;
@@ -76,6 +90,53 @@ const frequencies = [
   { value: 'monthly', label: 'Monthly' }
 ];
 
+// Predefined customer segments with realistic counts
+const predefinedSegments: CustomerSegment[] = [
+  {
+    id: 'all-active',
+    name: 'All Active Customers',
+    description:
+      'All customers with active status and email notifications enabled',
+    count: 1247,
+    criteria: { status: 'active', emailEnabled: true }
+  },
+  {
+    id: 'email-enabled',
+    name: 'Email Enabled Only',
+    description: 'Customers who have opted in to email communications',
+    count: 1156,
+    criteria: { emailEnabled: true }
+  },
+  {
+    id: 'overdue-payments',
+    name: 'Overdue Payments',
+    description: 'Customers with outstanding payment obligations',
+    count: 156,
+    criteria: { status: 'active', accountType: 'overdue' }
+  },
+  {
+    id: 'new-customers',
+    name: 'New Customers (Last 30 Days)',
+    description: 'Recently onboarded customers within the past month',
+    count: 45,
+    criteria: { status: 'active', lastActivityDays: 30 }
+  },
+  {
+    id: 'vip-customers',
+    name: 'VIP Customers',
+    description: 'High-value customers with premium account status',
+    count: 89,
+    criteria: { status: 'active', accountType: 'vip' }
+  },
+  {
+    id: 'inactive-customers',
+    name: 'Inactive Customers',
+    description: "Customers who haven't been active recently",
+    count: 234,
+    criteria: { status: 'inactive', emailEnabled: true }
+  }
+];
+
 export default function EmailSchedulerPage() {
   const [scheduledCampaigns, setScheduledCampaigns] = useState<
     ScheduledCampaign[]
@@ -91,7 +152,7 @@ export default function EmailSchedulerPage() {
     name: '',
     subject: '',
     templateName: '',
-    recipientCount: 0,
+    selectedSegment: predefinedSegments[0], // Default to "All Active Customers"
     scheduledDate: '',
     scheduledTime: '',
     timezone: 'America/New_York',
@@ -112,7 +173,7 @@ export default function EmailSchedulerPage() {
           name: 'February 2025 Statements',
           subject: 'Your February 2025 Statement is Ready',
           templateName: 'Monthly Statement Ready',
-          recipientCount: 1289,
+          recipientSegment: predefinedSegments[0], // All Active Customers
           scheduledDate: new Date('2025-02-20'),
           scheduledTime: '10:30',
           timezone: 'America/New_York',
@@ -126,7 +187,7 @@ export default function EmailSchedulerPage() {
           name: 'Weekly Newsletter',
           subject: 'ClientCore Weekly Update - {{weekOf}}',
           templateName: 'Weekly Newsletter',
-          recipientCount: 2341,
+          recipientSegment: predefinedSegments[1], // Email Enabled Only
           scheduledDate: new Date('2025-01-27'),
           scheduledTime: '09:00',
           timezone: 'America/New_York',
@@ -140,7 +201,7 @@ export default function EmailSchedulerPage() {
           name: 'Payment Reminder Campaign',
           subject: 'Friendly Reminder: Payment Due Soon',
           templateName: 'Payment Reminder',
-          recipientCount: 156,
+          recipientSegment: predefinedSegments[2], // Overdue Payments
           scheduledDate: new Date('2025-01-25'),
           scheduledTime: '14:00',
           timezone: 'America/Chicago',
@@ -154,7 +215,7 @@ export default function EmailSchedulerPage() {
           name: 'Welcome Series - Day 3',
           subject: 'Getting Started with ClientCore Features',
           templateName: 'Welcome Series Day 3',
-          recipientCount: 45,
+          recipientSegment: predefinedSegments[3], // New Customers
           scheduledDate: new Date('2025-01-24'),
           scheduledTime: '11:00',
           timezone: 'America/Los_Angeles',
@@ -202,7 +263,7 @@ export default function EmailSchedulerPage() {
       name: formData.name,
       subject: formData.subject,
       templateName: formData.templateName || 'Custom Template',
-      recipientCount: formData.recipientCount,
+      recipientSegment: formData.selectedSegment,
       scheduledDate: new Date(formData.scheduledDate),
       scheduledTime: formData.scheduledTime,
       timezone: formData.timezone,
@@ -228,7 +289,7 @@ export default function EmailSchedulerPage() {
       name: campaign.name,
       subject: campaign.subject,
       templateName: campaign.templateName,
-      recipientCount: campaign.recipientCount,
+      selectedSegment: campaign.recipientSegment,
       scheduledDate: campaign.scheduledDate.toISOString().split('T')[0],
       scheduledTime: campaign.scheduledTime,
       timezone: campaign.timezone,
@@ -260,7 +321,7 @@ export default function EmailSchedulerPage() {
               name: formData.name,
               subject: formData.subject,
               templateName: formData.templateName,
-              recipientCount: formData.recipientCount,
+              recipientSegment: formData.selectedSegment,
               scheduledDate: new Date(formData.scheduledDate),
               scheduledTime: formData.scheduledTime,
               timezone: formData.timezone,
@@ -318,7 +379,7 @@ export default function EmailSchedulerPage() {
       name: '',
       subject: '',
       templateName: '',
-      recipientCount: 0,
+      selectedSegment: predefinedSegments[0], // Reset to default segment
       scheduledDate: '',
       scheduledTime: '',
       timezone: 'America/New_York',
@@ -428,6 +489,26 @@ export default function EmailSchedulerPage() {
                 </DialogDescription>
               </DialogHeader>
               <div className='space-y-4'>
+                {/* Recipient Count Display */}
+                <div className='rounded-lg bg-blue-50 p-4'>
+                  <div className='flex items-center justify-between'>
+                    <div>
+                      <h4 className='font-medium text-blue-900'>
+                        Selected Recipients
+                      </h4>
+                      <p className='text-sm text-blue-700'>
+                        {formData.selectedSegment.name}
+                      </p>
+                    </div>
+                    <div className='text-right'>
+                      <div className='text-2xl font-bold text-blue-600'>
+                        {formData.selectedSegment.count.toLocaleString()}
+                      </div>
+                      <div className='text-xs text-blue-600'>recipients</div>
+                    </div>
+                  </div>
+                </div>
+
                 <div className='grid grid-cols-2 gap-4'>
                   <div>
                     <Label htmlFor='campaignName'>Campaign Name</Label>
@@ -547,19 +628,40 @@ export default function EmailSchedulerPage() {
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor='recipientCount'>Recipients</Label>
-                    <Input
-                      id='recipientCount'
-                      type='number'
-                      placeholder='0'
-                      value={formData.recipientCount || ''}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          recipientCount: parseInt(e.target.value) || 0
-                        }))
-                      }
-                    />
+                    <Label htmlFor='customerSegment'>Customer Segment</Label>
+                    <Select
+                      value={formData.selectedSegment.id}
+                      onValueChange={(value) => {
+                        const segment = predefinedSegments.find(
+                          (s) => s.id === value
+                        );
+                        if (segment) {
+                          setFormData((prev) => ({
+                            ...prev,
+                            selectedSegment: segment
+                          }));
+                        }
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {predefinedSegments.map((segment) => (
+                          <SelectItem key={segment.id} value={segment.id}>
+                            <div className='flex w-full items-center justify-between'>
+                              <span>{segment.name}</span>
+                              <Badge variant='secondary' className='ml-2'>
+                                {segment.count.toLocaleString()} recipients
+                              </Badge>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className='mt-1 text-xs text-muted-foreground'>
+                      {formData.selectedSegment.description}
+                    </p>
                   </div>
                 </div>
                 <div className='flex justify-end gap-2'>
@@ -721,9 +823,15 @@ export default function EmailSchedulerPage() {
                           {getFrequencyBadge(campaign.frequency)}
                         </TableCell>
                         <TableCell>
-                          <div className='flex items-center gap-1 text-sm'>
-                            <Users className='h-3 w-3' />
-                            {campaign.recipientCount.toLocaleString()}
+                          <div className='text-sm'>
+                            <div className='font-medium'>
+                              {campaign.recipientSegment.name}
+                            </div>
+                            <div className='flex items-center gap-1 text-muted-foreground'>
+                              <Users className='h-3 w-3' />
+                              {campaign.recipientSegment.count.toLocaleString()}{' '}
+                              recipients
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell>{getStatusBadge(campaign.status)}</TableCell>
@@ -896,18 +1004,40 @@ export default function EmailSchedulerPage() {
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor='editRecipientCount'>Recipients</Label>
-                  <Input
-                    id='editRecipientCount'
-                    type='number'
-                    value={formData.recipientCount || ''}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        recipientCount: parseInt(e.target.value) || 0
-                      }))
-                    }
-                  />
+                  <Label htmlFor='editCustomerSegment'>Customer Segment</Label>
+                  <Select
+                    value={formData.selectedSegment.id}
+                    onValueChange={(value) => {
+                      const segment = predefinedSegments.find(
+                        (s) => s.id === value
+                      );
+                      if (segment) {
+                        setFormData((prev) => ({
+                          ...prev,
+                          selectedSegment: segment
+                        }));
+                      }
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {predefinedSegments.map((segment) => (
+                        <SelectItem key={segment.id} value={segment.id}>
+                          <div className='flex w-full items-center justify-between'>
+                            <span>{segment.name}</span>
+                            <Badge variant='secondary' className='ml-2'>
+                              {segment.count.toLocaleString()} recipients
+                            </Badge>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className='mt-1 text-xs text-muted-foreground'>
+                    {formData.selectedSegment.description}
+                  </p>
                 </div>
               </div>
               <div className='flex justify-end gap-2'>
