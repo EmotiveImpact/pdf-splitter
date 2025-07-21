@@ -40,7 +40,6 @@ import AccountMatchingComponent from '@/components/email/AccountMatchingComponen
 import EmailTemplateComponent from '@/components/email/EmailTemplateComponent';
 import EmailSendingComponent from '@/components/email/EmailSendingComponent';
 import FileCleanupManager from '@/components/cleanup/FileCleanupManager';
-import { memoryManager } from '@/lib/memoryManager';
 import PageContainer from '@/components/layout/page-container';
 
 interface PDFFile {
