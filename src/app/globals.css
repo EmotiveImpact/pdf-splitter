@@ -79,8 +79,22 @@
   * {
     @apply border-border;
   }
+
+  html {
+    /* Set base font size to 18px instead of default 16px for better readability */
+    font-size: 18px;
+    /* Ensure proper scaling on all devices */
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
   body {
     @apply box-border bg-background text-foreground;
+    /* Ensure consistent line height and font rendering */
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
@@ -117,11 +131,42 @@
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
+/* Removed duplicate base styles - already defined above */
+
+/* Enhanced UI scaling and sizing */
+@layer components {
+  /* Ensure sidebar has proper minimum sizes */
+  .sidebar {
+    min-width: 280px;
   }
-  body {
-    @apply bg-background text-foreground;
+
+  /* Ensure icons are properly sized */
+  .sidebar-icon {
+    min-width: 20px;
+    min-height: 20px;
+  }
+
+  /* Ensure buttons have proper touch targets */
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Ensure cards have proper spacing */
+  .card {
+    padding: 1.5rem;
+  }
+
+  /* Ensure text is readable */
+  .text-sm {
+    font-size: 0.9rem;
+  }
+
+  .text-base {
+    font-size: 1rem;
+  }
+
+  .text-lg {
+    font-size: 1.125rem;
   }
 }
