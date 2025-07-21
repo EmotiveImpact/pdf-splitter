@@ -20,8 +20,30 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import ZipUploadComponent from '@/components/email/ZipUploadComponent';
-import CsvUploadComponent from '@/components/email/CsvUploadComponent';
+// Dynamic imports for email components to avoid SSR issues
+const ZipUploadComponent = dynamic(
+  () => import('@/components/email/ZipUploadComponent'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className='flex items-center justify-center py-8'>
+        Loading ZIP upload...
+      </div>
+    )
+  }
+);
+
+const CsvUploadComponent = dynamic(
+  () => import('@/components/email/CsvUploadComponent'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className='flex items-center justify-center py-8'>
+        Loading CSV upload...
+      </div>
+    )
+  }
+);
 import dynamic from 'next/dynamic';
 
 // Dynamically import CustomerDatabaseComponent to avoid SSR issues
@@ -36,9 +58,41 @@ const CustomerDatabaseComponent = dynamic(
     )
   }
 );
-import AccountMatchingComponent from '@/components/email/AccountMatchingComponent';
-import EmailTemplateComponent from '@/components/email/EmailTemplateComponent';
-import EmailSendingComponent from '@/components/email/EmailSendingComponent';
+const AccountMatchingComponent = dynamic(
+  () => import('@/components/email/AccountMatchingComponent'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className='flex items-center justify-center py-8'>
+        Loading account matching...
+      </div>
+    )
+  }
+);
+
+const EmailTemplateComponent = dynamic(
+  () => import('@/components/email/EmailTemplateComponent'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className='flex items-center justify-center py-8'>
+        Loading email template...
+      </div>
+    )
+  }
+);
+
+const EmailSendingComponent = dynamic(
+  () => import('@/components/email/EmailSendingComponent'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className='flex items-center justify-center py-8'>
+        Loading email sending...
+      </div>
+    )
+  }
+);
 import FileCleanupManager from '@/components/cleanup/FileCleanupManager';
 import PageContainer from '@/components/layout/page-container';
 
