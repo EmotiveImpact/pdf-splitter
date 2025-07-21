@@ -137,7 +137,7 @@ interface MatchedFile {
 }
 
 const EmailDistributionPage = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(2); // Temporarily start at step 2 for testing
   const [extractedFiles, setExtractedFiles] = useState<PDFFile[]>([]);
   const [customerData, setCustomerData] = useState<CustomerData[]>([]);
   const [customerDataSource, setCustomerDataSource] = useState<
