@@ -72,6 +72,18 @@ export const navItems: NavItem[] = [
         url: '/dashboard/campaigns',
         icon: 'history',
         shortcut: ['e', 'h']
+      },
+      {
+        title: 'Email Analytics',
+        url: '/dashboard/email-analytics',
+        icon: 'barChart3',
+        shortcut: ['e', 'a']
+      },
+      {
+        title: 'Email Scheduler',
+        url: '/dashboard/email-scheduler',
+        icon: 'calendar',
+        shortcut: ['e', 's']
       }
     ]
   },
