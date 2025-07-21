@@ -8,7 +8,11 @@ import {
   Users,
   Clock,
   TrendingUp,
-  TrendingDown
+  TrendingDown,
+  DollarSign,
+  CreditCard,
+  MessageSquare,
+  Calendar
 } from 'lucide-react';
 import {
   DashboardDataService,
@@ -24,7 +28,16 @@ export default function DashboardStatsComponent() {
     pdfsGrowth: 0,
     emailsGrowth: 0,
     clientsGrowth: 0,
-    efficiencyGain: 0
+    efficiencyGain: 0,
+    // New CRM metrics
+    totalRevenue: 0,
+    monthlyRevenue: 0,
+    outstandingInvoices: 0,
+    pendingTasks: 0,
+    recentCommunications: 0,
+    revenueGrowth: 0,
+    invoiceGrowth: 0,
+    taskCompletionRate: 0
   });
 
   const [isLoading, setIsLoading] = useState(true);
@@ -66,10 +79,17 @@ export default function DashboardStatsComponent() {
     return growth > 0 ? 'text-green-600' : 'text-red-600';
   };
 
+  const formatCurrency = (cents: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(cents / 100);
+  };
+
   if (isLoading) {
     return (
       <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
-        {[...Array(4)].map((_, i) => (
+        {[...Array(8)].map((_, i) => (
           <Card key={i}>
             <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
               <CardTitle className='text-sm font-medium'>Loading...</CardTitle>
@@ -157,6 +177,73 @@ export default function DashboardStatsComponent() {
             {stats.efficiencyGain > 0
               ? `+${stats.efficiencyGain}% efficiency gain`
               : 'Start processing to see savings'}
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* CRM Metrics */}
+      <Card>
+        <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+          <CardTitle className='text-sm font-medium'>Total Revenue</CardTitle>
+          <DollarSign className='h-4 w-4 text-muted-foreground' />
+        </CardHeader>
+        <CardContent>
+          <div className='text-2xl font-bold text-green-600'>
+            {formatCurrency(stats.totalRevenue || 0)}
+          </div>
+          <p className={`text-xs ${getGrowthColor(stats.revenueGrowth || 0)}`}>
+            {getGrowthIcon(stats.revenueGrowth || 0) && (
+              <TrendingUp className='mr-1 inline h-3 w-3' />
+            )}
+            {formatGrowth(stats.revenueGrowth || 0)}
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+          <CardTitle className='text-sm font-medium'>
+            Outstanding Invoices
+          </CardTitle>
+          <CreditCard className='h-4 w-4 text-muted-foreground' />
+        </CardHeader>
+        <CardContent>
+          <div className='text-2xl font-bold text-yellow-600'>
+            {(stats.outstandingInvoices || 0).toLocaleString()}
+          </div>
+          <p className={`text-xs ${getGrowthColor(stats.invoiceGrowth || 0)}`}>
+            {getGrowthIcon(stats.invoiceGrowth || 0) && (
+              <TrendingUp className='mr-1 inline h-3 w-3' />
+            )}
+            {formatGrowth(stats.invoiceGrowth || 0)}
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+          <CardTitle className='text-sm font-medium'>Communications</CardTitle>
+          <MessageSquare className='h-4 w-4 text-muted-foreground' />
+        </CardHeader>
+        <CardContent>
+          <div className='text-2xl font-bold text-indigo-600'>
+            {(stats.recentCommunications || 0).toLocaleString()}
+          </div>
+          <p className='text-xs text-muted-foreground'>Recent interactions</p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+          <CardTitle className='text-sm font-medium'>Pending Tasks</CardTitle>
+          <Calendar className='h-4 w-4 text-muted-foreground' />
+        </CardHeader>
+        <CardContent>
+          <div className='text-2xl font-bold text-purple-600'>
+            {(stats.pendingTasks || 0).toLocaleString()}
+          </div>
+          <p className='text-xs text-muted-foreground'>
+            {stats.taskCompletionRate || 0}% completion rate
           </p>
         </CardContent>
       </Card>

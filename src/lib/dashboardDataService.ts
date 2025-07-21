@@ -11,6 +11,15 @@ export interface DashboardStats {
   emailsGrowth: number;
   clientsGrowth: number;
   efficiencyGain: number;
+  // CRM metrics
+  totalRevenue?: number;
+  monthlyRevenue?: number;
+  outstandingInvoices?: number;
+  pendingTasks?: number;
+  recentCommunications?: number;
+  revenueGrowth?: number;
+  invoiceGrowth?: number;
+  taskCompletionRate?: number;
 }
 
 export class DashboardDataService {
@@ -25,7 +34,15 @@ export class DashboardDataService {
         pdfsGrowth: 0,
         emailsGrowth: 0,
         clientsGrowth: 0,
-        efficiencyGain: 0
+        efficiencyGain: 0,
+        totalRevenue: 0,
+        monthlyRevenue: 0,
+        outstandingInvoices: 0,
+        pendingTasks: 0,
+        recentCommunications: 0,
+        revenueGrowth: 0,
+        invoiceGrowth: 0,
+        taskCompletionRate: 0
       };
     }
 
@@ -59,6 +76,16 @@ export class DashboardDataService {
           ? Math.min(Math.round((timeSavedHours / 2) * 100) / 100, 30)
           : 0;
 
+      // Mock CRM data for demonstration
+      const totalRevenue = 284765; // $2,847.65 in cents
+      const monthlyRevenue = 23458; // $234.58 in cents
+      const outstandingInvoices = 156;
+      const pendingTasks = 45;
+      const recentCommunications = 89;
+      const revenueGrowth = 12.5;
+      const invoiceGrowth = -5.2;
+      const taskCompletionRate = 78.5;
+
       return {
         pdfsProcessed,
         emailsSent,
@@ -67,7 +94,15 @@ export class DashboardDataService {
         pdfsGrowth,
         emailsGrowth,
         clientsGrowth,
-        efficiencyGain
+        efficiencyGain,
+        totalRevenue,
+        monthlyRevenue,
+        outstandingInvoices,
+        pendingTasks,
+        recentCommunications,
+        revenueGrowth,
+        invoiceGrowth,
+        taskCompletionRate
       };
     } catch (error) {
       console.error('Error getting dashboard stats:', error);
@@ -79,7 +114,15 @@ export class DashboardDataService {
         pdfsGrowth: 0,
         emailsGrowth: 0,
         clientsGrowth: 0,
-        efficiencyGain: 0
+        efficiencyGain: 0,
+        totalRevenue: 0,
+        monthlyRevenue: 0,
+        outstandingInvoices: 0,
+        pendingTasks: 0,
+        recentCommunications: 0,
+        revenueGrowth: 0,
+        invoiceGrowth: 0,
+        taskCompletionRate: 0
       };
     }
   }

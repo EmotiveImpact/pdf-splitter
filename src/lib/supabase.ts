@@ -1,19 +1,55 @@
 import { createClient } from '@supabase/supabase-js';
 import { Database } from './database.types';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const getSupabaseUrl = () => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!url) {
+    throw new Error('NEXT_PUBLIC_SUPABASE_URL is required');
+  }
+  return url;
+};
 
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
+const getSupabaseAnonKey = () => {
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!key) {
+    throw new Error('NEXT_PUBLIC_SUPABASE_ANON_KEY is required');
+  }
+  return key;
+};
+
+// Client-side Supabase client (lazy initialization)
+let _supabase: ReturnType<typeof createClient<Database>> | null = null;
+export const supabase = () => {
+  if (!_supabase) {
+    _supabase = createClient<Database>(getSupabaseUrl(), getSupabaseAnonKey());
+  }
+  return _supabase;
+};
 
 // Client-side Supabase client
 export const createClientComponentClient = () => {
-  return createClient<Database>(supabaseUrl, supabaseAnonKey);
+  return createClient<Database>(getSupabaseUrl(), getSupabaseAnonKey());
 };
 
 // Server-side Supabase client for Server Components
 export const createServerComponentClient = () => {
-  return createClient<Database>(supabaseUrl, supabaseAnonKey);
+  return createClient<Database>(getSupabaseUrl(), getSupabaseAnonKey());
+};
+
+// Server-side Supabase client for API routes (uses service role key)
+export const createServerClient = () => {
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseServiceKey) {
+    // During build time, return a mock client to prevent build errors
+    if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
+      throw new Error(
+        'SUPABASE_SERVICE_ROLE_KEY is required for server-side operations'
+      );
+    }
+    // For build time, use anon key as fallback
+    return createClient<Database>(getSupabaseUrl(), getSupabaseAnonKey());
+  }
+  return createClient<Database>(getSupabaseUrl(), supabaseServiceKey);
 };
 
 // Types for our database tables

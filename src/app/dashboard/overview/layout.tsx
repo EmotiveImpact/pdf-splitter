@@ -1,6 +1,15 @@
 import PageContainer from '@/components/layout/page-container';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileText, Mail, Users, ArrowRight } from 'lucide-react';
+import {
+  FileText,
+  Mail,
+  Users,
+  ArrowRight,
+  BarChart3,
+  CreditCard,
+  Calendar,
+  MessageSquare
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import React from 'react';
@@ -26,7 +35,8 @@ export default function OverViewLayout({
               Welcome to ClientCore 🚀
             </h2>
             <p className='text-muted-foreground'>
-              Professional client management and business automation platform
+              Complete business management platform with CRM, billing, and
+              automation
             </p>
           </div>
         </div>
@@ -39,7 +49,17 @@ export default function OverViewLayout({
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className='grid gap-4 md:grid-cols-3'>
+            <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
+              <Link href='/dashboard/crm'>
+                <Button
+                  className='flex h-20 w-full flex-col gap-2'
+                  variant='outline'
+                >
+                  <BarChart3 className='h-6 w-6' />
+                  <span>CRM Dashboard</span>
+                  <ArrowRight className='h-4 w-4' />
+                </Button>
+              </Link>
               <Link href='/dashboard/pdf-splitter'>
                 <Button
                   className='flex h-20 w-full flex-col gap-2'
@@ -50,24 +70,58 @@ export default function OverViewLayout({
                   <ArrowRight className='h-4 w-4' />
                 </Button>
               </Link>
-              <Link href='/dashboard/email-distribution'>
+              <Link href='/dashboard/invoices'>
                 <Button
                   className='flex h-20 w-full flex-col gap-2'
                   variant='outline'
                 >
-                  <Mail className='h-6 w-6' />
-                  <span>Send Emails</span>
+                  <CreditCard className='h-6 w-6' />
+                  <span>Create Invoice</span>
                   <ArrowRight className='h-4 w-4' />
+                </Button>
+              </Link>
+              <Link href='/dashboard/communications'>
+                <Button
+                  className='flex h-20 w-full flex-col gap-2'
+                  variant='outline'
+                >
+                  <MessageSquare className='h-6 w-6' />
+                  <span>Communications</span>
+                  <ArrowRight className='h-4 w-4' />
+                </Button>
+              </Link>
+            </div>
+
+            {/* Secondary Actions */}
+            <div className='mt-4 grid gap-4 md:grid-cols-3'>
+              <Link href='/dashboard/email-distribution'>
+                <Button
+                  className='flex h-16 w-full flex-col gap-1'
+                  variant='ghost'
+                  size='sm'
+                >
+                  <Mail className='h-5 w-5' />
+                  <span className='text-sm'>Send Emails</span>
                 </Button>
               </Link>
               <Link href='/dashboard/clients'>
                 <Button
-                  className='flex h-20 w-full flex-col gap-2'
-                  variant='outline'
+                  className='flex h-16 w-full flex-col gap-1'
+                  variant='ghost'
+                  size='sm'
                 >
-                  <Users className='h-6 w-6' />
-                  <span>Manage Clients</span>
-                  <ArrowRight className='h-4 w-4' />
+                  <Users className='h-5 w-5' />
+                  <span className='text-sm'>Manage Clients</span>
+                </Button>
+              </Link>
+              <Link href='/dashboard/tasks'>
+                <Button
+                  className='flex h-16 w-full flex-col gap-1'
+                  variant='ghost'
+                  size='sm'
+                >
+                  <Calendar className='h-5 w-5' />
+                  <span className='text-sm'>Tasks & Follow-ups</span>
                 </Button>
               </Link>
             </div>
