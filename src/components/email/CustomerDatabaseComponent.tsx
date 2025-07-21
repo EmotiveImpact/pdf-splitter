@@ -74,9 +74,9 @@ export default function CustomerDatabaseComponent({
     filterCustomers();
   }, [customers, searchTerm, statusFilter, emailFilter]);
 
-  useEffect(() => {
-    // Update parent component when selection changes
-    const selectedCustomers = customers
+  // Helper function to update parent component with selected customers
+  const updateSelectedCustomers = (updatedCustomers: Customer[]) => {
+    const selectedCustomers = updatedCustomers
       .filter((customer) => customer.selected)
       .map((customer) => ({
         accountNumber: customer.account_number,
@@ -85,7 +85,7 @@ export default function CustomerDatabaseComponent({
       }));
 
     onCustomersSelected(selectedCustomers);
-  }, [customers, onCustomersSelected]);
+  };
 
   const loadCustomers = () => {
     // Only run on client side
@@ -201,39 +201,54 @@ export default function CustomerDatabaseComponent({
   };
 
   const toggleCustomerSelection = (customerId: string) => {
-    setCustomers((prev) =>
-      prev.map((customer) =>
+    setCustomers((prev) => {
+      const updatedCustomers = prev.map((customer) =>
         customer.id === customerId
           ? { ...customer, selected: !customer.selected }
           : customer
-      )
-    );
+      );
+
+      // Update parent component with new selection
+      updateSelectedCustomers(updatedCustomers);
+
+      return updatedCustomers;
+    });
   };
 
   const toggleSelectAll = () => {
     const newSelectAll = !selectAll;
     setSelectAll(newSelectAll);
 
-    setCustomers((prev) =>
-      prev.map((customer) => ({
+    setCustomers((prev) => {
+      const updatedCustomers = prev.map((customer) => ({
         ...customer,
         selected: filteredCustomers.some((fc) => fc.id === customer.id)
           ? newSelectAll
           : customer.selected
-      }))
-    );
+      }));
+
+      // Update parent component with new selection
+      updateSelectedCustomers(updatedCustomers);
+
+      return updatedCustomers;
+    });
   };
 
   const selectActiveWithEmail = () => {
-    setCustomers((prev) =>
-      prev.map((customer) => ({
+    setCustomers((prev) => {
+      const updatedCustomers = prev.map((customer) => ({
         ...customer,
         selected:
           customer.status === 'active' &&
           customer.email &&
           customer.email_notifications
-      }))
-    );
+      }));
+
+      // Update parent component with new selection
+      updateSelectedCustomers(updatedCustomers);
+
+      return updatedCustomers;
+    });
 
     toast({
       title: 'Selection updated',
@@ -243,12 +258,17 @@ export default function CustomerDatabaseComponent({
   };
 
   const clearSelection = () => {
-    setCustomers((prev) =>
-      prev.map((customer) => ({
+    setCustomers((prev) => {
+      const updatedCustomers = prev.map((customer) => ({
         ...customer,
         selected: false
-      }))
-    );
+      }));
+
+      // Update parent component with new selection (empty array)
+      updateSelectedCustomers(updatedCustomers);
+
+      return updatedCustomers;
+    });
     setSelectAll(false);
   };
 
