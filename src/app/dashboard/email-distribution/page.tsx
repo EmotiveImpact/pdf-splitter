@@ -93,7 +93,17 @@ const EmailSendingComponent = dynamic(
     )
   }
 );
-import FileCleanupManager from '@/components/cleanup/FileCleanupManager';
+const FileCleanupManager = dynamic(
+  () => import('@/components/cleanup/FileCleanupManager'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className='flex items-center justify-center py-8'>
+        Loading file cleanup...
+      </div>
+    )
+  }
+);
 import PageContainer from '@/components/layout/page-container';
 
 interface PDFFile {
