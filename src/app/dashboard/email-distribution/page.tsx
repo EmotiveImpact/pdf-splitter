@@ -48,7 +48,7 @@ import dynamic from 'next/dynamic';
 
 // Dynamically import CustomerDatabaseComponent to avoid SSR issues
 const CustomerDatabaseComponent = dynamic(
-  () => import('@/components/email/CustomerDatabaseComponent'),
+  () => import('@/components/email/CustomerDatabaseComponentSimple'),
   {
     ssr: false,
     loading: () => (
@@ -379,7 +379,6 @@ const EmailDistributionPage = () => {
                   }));
                   setCustomerData(customerData);
                 }}
-                selectedCount={customerData.length}
               />
             ) : (
               <CsvUploadComponent
