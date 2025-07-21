@@ -64,7 +64,10 @@ export default function CustomerDatabaseComponent({
   const { toast } = useToast();
 
   useEffect(() => {
-    loadCustomers();
+    // Only run on client side
+    if (typeof window !== 'undefined') {
+      loadCustomers();
+    }
   }, []);
 
   useEffect(() => {
@@ -85,6 +88,11 @@ export default function CustomerDatabaseComponent({
   }, [customers, onCustomersSelected]);
 
   const loadCustomers = () => {
+    // Only run on client side
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     setIsLoading(true);
     try {
       // Load mock customer data (in real app, this would come from the customer database)

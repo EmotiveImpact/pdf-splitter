@@ -22,7 +22,20 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import ZipUploadComponent from '@/components/email/ZipUploadComponent';
 import CsvUploadComponent from '@/components/email/CsvUploadComponent';
-import CustomerDatabaseComponent from '@/components/email/CustomerDatabaseComponent';
+import dynamic from 'next/dynamic';
+
+// Dynamically import CustomerDatabaseComponent to avoid SSR issues
+const CustomerDatabaseComponent = dynamic(
+  () => import('@/components/email/CustomerDatabaseComponent'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className='flex items-center justify-center py-8'>
+        Loading customer database...
+      </div>
+    )
+  }
+);
 import AccountMatchingComponent from '@/components/email/AccountMatchingComponent';
 import EmailTemplateComponent from '@/components/email/EmailTemplateComponent';
 import EmailSendingComponent from '@/components/email/EmailSendingComponent';
