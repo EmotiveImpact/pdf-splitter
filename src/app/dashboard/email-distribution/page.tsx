@@ -137,7 +137,7 @@ interface MatchedFile {
 }
 
 const EmailDistributionPage = () => {
-  const [currentStep, setCurrentStep] = useState(2); // Temporarily start at step 2 for testing
+  const [currentStep, setCurrentStep] = useState(1);
   const [extractedFiles, setExtractedFiles] = useState<PDFFile[]>([]);
   const [customerData, setCustomerData] = useState<CustomerData[]>([]);
   const [customerDataSource, setCustomerDataSource] = useState<
@@ -202,8 +202,7 @@ const EmailDistributionPage = () => {
   const canProceedToNext = () => {
     switch (currentStep) {
       case 1:
-        // Temporarily allow proceeding to Step 2 for testing customer data source
-        return true; // Changed from: extractedFiles.length > 0
+        return extractedFiles.length > 0;
       case 2:
         return customerData.length > 0;
       case 3:
