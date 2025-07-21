@@ -6,7 +6,9 @@ import {
   ArrowRight,
   ArrowLeft,
   CheckCircle,
-  RefreshCw
+  RefreshCw,
+  Users,
+  Upload
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -20,6 +22,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import ZipUploadComponent from '@/components/email/ZipUploadComponent';
 import CsvUploadComponent from '@/components/email/CsvUploadComponent';
+import CustomerDatabaseComponent from '@/components/email/CustomerDatabaseComponent';
 import AccountMatchingComponent from '@/components/email/AccountMatchingComponent';
 import EmailTemplateComponent from '@/components/email/EmailTemplateComponent';
 import EmailSendingComponent from '@/components/email/EmailSendingComponent';
@@ -61,6 +64,9 @@ const EmailDistributionPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [extractedFiles, setExtractedFiles] = useState<PDFFile[]>([]);
   const [customerData, setCustomerData] = useState<CustomerData[]>([]);
+  const [customerDataSource, setCustomerDataSource] = useState<
+    'csv' | 'database'
+  >('csv');
   const [matchedFiles, setMatchedFiles] = useState<MatchedFile[]>([]);
   const [emailTemplate, setEmailTemplate] = useState({
     subject: '',
@@ -76,8 +82,8 @@ const EmailDistributionPage = () => {
     },
     {
       id: 2,
-      title: 'Upload Customer Data',
-      description: 'Upload CSV with customer information'
+      title: 'Customer Data',
+      description: 'Select customers from database or upload CSV'
     },
     {
       id: 3,
@@ -249,12 +255,64 @@ const EmailDistributionPage = () => {
         )}
 
         {currentStep === 2 && (
-          <CsvUploadComponent
-            onDataLoaded={setCustomerData}
-            customerData={customerData}
-            isProcessing={isProcessing}
-            setIsProcessing={setIsProcessing}
-          />
+          <div className='space-y-4'>
+            {/* Data Source Selection */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Customer Data Source</CardTitle>
+                <CardDescription>
+                  Choose how to provide customer information for email
+                  distribution
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className='flex gap-4'>
+                  <Button
+                    variant={
+                      customerDataSource === 'database' ? 'default' : 'outline'
+                    }
+                    onClick={() => setCustomerDataSource('database')}
+                    className='flex-1'
+                  >
+                    <Users className='mr-2 h-4 w-4' />
+                    Use Customer Database
+                  </Button>
+                  <Button
+                    variant={
+                      customerDataSource === 'csv' ? 'default' : 'outline'
+                    }
+                    onClick={() => setCustomerDataSource('csv')}
+                    className='flex-1'
+                  >
+                    <Upload className='mr-2 h-4 w-4' />
+                    Upload CSV File
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Conditional Content */}
+            {customerDataSource === 'database' ? (
+              <CustomerDatabaseComponent
+                onCustomersSelected={(customers) => {
+                  const customerData = customers.map((c) => ({
+                    accountNumber: c.accountNumber,
+                    email: c.email,
+                    customerName: c.customerName
+                  }));
+                  setCustomerData(customerData);
+                }}
+                selectedCount={customerData.length}
+              />
+            ) : (
+              <CsvUploadComponent
+                onDataLoaded={setCustomerData}
+                customerData={customerData}
+                isProcessing={isProcessing}
+                setIsProcessing={setIsProcessing}
+              />
+            )}
+          </div>
         )}
 
         {currentStep === 3 && (

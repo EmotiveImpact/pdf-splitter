@@ -29,7 +29,7 @@ export const navItems: NavItem[] = [
     isActive: false,
     items: [
       {
-        title: 'PDF Splitter',
+        title: 'Process PDFs',
         url: '/dashboard/pdf-splitter',
         icon: 'fileText',
         shortcut: ['p', 's']
@@ -39,6 +39,12 @@ export const navItems: NavItem[] = [
         url: '/dashboard/processing-history',
         icon: 'history',
         shortcut: ['p', 'h']
+      },
+      {
+        title: 'Pattern Extraction Tool',
+        url: '/dashboard/pattern-extraction',
+        icon: 'search',
+        shortcut: ['p', 'e']
       }
     ]
   },
@@ -70,14 +76,14 @@ export const navItems: NavItem[] = [
     ]
   },
   {
-    title: 'Clients',
+    title: 'Customers',
     url: '#',
     icon: 'users',
     shortcut: ['c', 'c'],
     isActive: false,
     items: [
       {
-        title: 'Client Database',
+        title: 'Customer Database',
         url: '/dashboard/clients',
         icon: 'users',
         shortcut: ['c', 'd']
@@ -89,7 +95,7 @@ export const navItems: NavItem[] = [
         shortcut: ['c', 'i']
       },
       {
-        title: 'Client Analytics',
+        title: 'Customer Analytics',
         url: '/dashboard/clients/analytics',
         icon: 'barChart3',
         shortcut: ['c', 'a']

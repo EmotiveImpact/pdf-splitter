@@ -217,9 +217,9 @@ const ClientsPage = () => {
         {/* Header */}
         <div className='flex items-center justify-between'>
           <div>
-            <h1 className='text-3xl font-bold'>Client Management</h1>
+            <h1 className='text-3xl font-bold'>Customer Management</h1>
             <p className='text-muted-foreground'>
-              Manage your client database and communication preferences
+              Manage your customer database and communication preferences
             </p>
           </div>
           <div className='flex gap-2'>
